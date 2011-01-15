@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title>Cascade Gazetteer Prototype</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        <style type="text/css">
+            .branch {
+                font-weight: bold;
+            }
+            .leaf {
+                margin-left: 20px;
+            }
+            #searchResults {
+                background-color: #eeeeee;
+            }
+            #selectedItem {
+                background-color: #bbbbbb;
+            }
+        </style>
+        <script type="text/javascript" src="./js/jquery-1.4.4.js"></script>
+        <script type="text/javascript">
+            var jsonURL = './resources/location/';
+            function expand(element, locId, cacheItemNumber, hasChildren) {
+//                alert('expanding: ' + $(element) + ", locId: " + locId +
+//                    ", cacheItemNumber: " + cacheItemNumber + ", hasChildren: " +
+//                    hasChildren);
+                if (hasChildren) {
+                    alert('another search');
+                    search(locId + "|" + cacheItemNumber, element);
+                } else {
+//                    alert('updating selected item');
+                    $("#selectedItem").html("Selected item: locId: " + locId +
+                    ", cacheItemNumber: " + cacheItemNumber + ", hasChildren: " +
+                    hasChildren + ", name: " + $(element).val());
+                }
+            }
+            function gotResult(data, element) {
+                //                alert('Got: ' + JSON.stringify(data));
+                // TODO: hourglass off
+                if ((null == data) || (null == data.location)) {
+                    return;
+                }
+                var locs = data.location;
+
+                var listEl = $("<ul></ul>");
+                alert(JSON.stringify(locs[0]));
+                for (i in locs) {
+                    var l = locs[i];
+                    //                    alert('el#' + i + ': ' + JSON.stringify(l));
+                    var itemEl = $("<li><a href='#' class='" +
+                        (l.hasChildren == "true" ? "branch" : "leaf") +
+                        "' onclick=\"expand(this, '" + l.id + "'," +
+                        l.cacheItemNumber + "," + l.hasChildren +
+                        ");\">" + l.name + '</a></li>');
+                    itemEl.appendTo(listEl);
+                }
+
+                listEl.appendTo(element.empty());
+            }
+            
+            function search(criteria, element) {
+                if ("" == criteria) {
+                    return;;
+                }
+                //                alert("Searching for: " + criteria);
+                var url = encodeURI(jsonURL + criteria);
+                //                alert('URL: ' + url);
+                $.getJSON(url, function(data) {
+                    gotResult(data, element);
+                });
+                // TODO: hourglass on
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Cascade Gazetteer Prototype</h1>
+        <form action="#">
+            <fieldset>
+                <legend>Search for a location below</legend>
+                <input type="text" id="locSearch" size="40" title="address search criteria"
+                       value="54 Wynyard Road, Sheffield"/>
+                <input type="submit" id="submit" value="Search"
+                       onclick="try { search($('#locSearch').val(), $('#searchResults')); } catch (err) { alert(err); }; return false;"/>
+                <br/>
+                <div id="searchResults"></div>
+                <div id="selectedItem"></div>
+            </fieldset>
+        </form>
+        <br/>
+        <br/>
+
+        <h2>Development</h2>
+        <a href="./resources/location/54+Wynyard+Road,+Sheffield">RESTful WL (JSON)</a>
+    </body>
+</html>

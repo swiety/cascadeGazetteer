@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title>Tree example (static)</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        <style type="text/css">
+            /*<![CDATA[*/
+            ul.tree {
+                list-style: none;
+            }
+            li.tree-leaf {
+                padding-left: 20px;
+            }
+            li.tree-node-collapsed, li.tree-node-expanded {
+                /* padding-left: 10px; */
+            }
+            tt.tree-handle {
+                width: 15px;
+                display: inline-block;
+                overflow: hidden;
+            }
+            .tree .tree-clickable {
+                cursor: pointer;
+            }
+            .tree .tree-progress {
+                cursor: progress;
+            }
+            /*]]>*/
+        </style>
+        <script type="text/javascript" src="./js/jquery-1.4.4.js"></script>
+        <script type="text/javascript">
+            /*<![CDATA[*/
+            function leafLabelClicked(event) {
+                //                alert('leaf clicked: '+ event.target);
+                alert('leaf clicked: '+ $(this).text());
+            }
+            function loadedNodeLabelClicked(event) {
+                //                alert('loadedNodeLabelClicked: '+ $(this).text());
+                var handle = $(this).children("tt").text();
+                $(this).children("tt").text('+' == handle? '-' : '+');
+                $(this).next("ul").toggle('slow');
+            }
+            function collapsedNodeLabelClicked(event) {
+                //                alert('collapsedNodeLabelClicked: '+ $(this).text());
+                $(this).unbind('click', collapsedNodeLabelClicked).removeClass('tree-clickable').addClass('tree-progress');
+                //                alert('collapsed node clicked: '+ $(this).text());
+                setTimeout(nodeLoaded, 800, $(this));
+            }
+            function nodeLoaded(labelNode) {
+                labelNode.children("tt").text('-');
+                //                labelNode.append("<p>aa</p>");
+                var ul = $("<ul/>", {
+                    "class": "tree"
+                }).hide();
+                for (i=0; i<10; i++) {
+                    ul.append($("<li/>", {
+                        "class": "tree-leaf"
+                    }).append($("<label/>", {
+                        "class": "tree-clickable"
+                    }).click(leafLabelClicked).
+                        append($("<a/>", {
+                        "href": "#"
+                    }).text("dynamically added item #" + i))));
+                }
+                labelNode.after(ul);
+                ul.show('slow');
+                labelNode.click(loadedNodeLabelClicked).removeClass('tree-progress').addClass('tree-clickable');
+            }
+            $(document).ready(function() {
+                //                $(".tree label").css('background-color', 'red');
+                $(".tree .tree-leaf label").click(leafLabelClicked).addClass("tree-clickable");
+                //                $(".tree .tree-node-expanded > label").css('background-color', 'green');
+                //                $(".tree .tree-node-collapsed > label").css('font-weight', 'bold');
+                $(".tree .tree-node-expanded > label").click(loadedNodeLabelClicked).addClass("tree-clickable");
+                $(".tree .tree-node-collapsed > label").click(collapsedNodeLabelClicked).addClass("tree-clickable");
+            });
+            /*]]>*/
+        </script>
+    </head>
+    <body>
+        <h1>Tree example (static)</h1>
+        <div>
+            <ul class="tree">
+                <li class="tree-leaf">
+                    <label>
+                        <a href="#">First item</a>
+                    </label>
+                </li>
+                <li class="tree-node-collapsed">                    
+                    <label>
+                        <tt class="tree-handle">+</tt>
+                        Second item
+                    </label>
+                </li>
+                <li class="tree-node-expanded">
+                    <label>
+                        <tt class="tree-handle">-</tt>
+                        Third item
+                    </label>
+                    <ul class="tree">
+                        <li class="tree-leaf">
+                            <label>
+                                <a href="#">Third.First item</a>
+                            </label>
+                        </li>
+                        <li class="tree-node-collapsed">
+                            <label>
+                                <tt class="tree-handle">+</tt>
+                                Third.Second item
+                            </label>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <br style="height: 50px;"/>
+        <div style="background-color: #ffcccc">
+            <!--            <label>TODO:</label>
+                        <ol>
+                        </ol>-->
+        </div>
+    </body>
+</html>
