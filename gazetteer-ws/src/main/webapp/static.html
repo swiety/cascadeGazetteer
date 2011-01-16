@@ -44,7 +44,7 @@
                 //                alert('collapsedNodeLabelClicked: '+ $(this).text());
                 $(this).unbind('click', collapsedNodeLabelClicked).removeClass('tree-clickable').addClass('tree-progress');
                 //                alert('collapsed node clicked: '+ $(this).text());
-                setTimeout(nodeLoaded, 800, $(this));
+                nodeLoaded($(this));
             }
             function nodeLoaded(labelNode) {
                 labelNode.children("tt").text('-');

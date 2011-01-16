@@ -11,12 +11,19 @@ public class Location {
     private boolean hasChildren;
     private String name;
     private String id;
-    private int cacheItemNumber;
+    private Integer cacheItemNumber;
 
     public Location() {
     }
 
-    public Location(boolean hasChildren, String name, String id, int cacheItemNumber) {
+    /**
+     * package private to restrict access to {@see LocationFactory} only.
+     * @param hasChildren
+     * @param name
+     * @param id
+     * @param cacheItemNumber
+     */
+    Location(boolean hasChildren, String name, String id, Integer cacheItemNumber) {
         this.hasChildren = hasChildren;
         this.name = name;
         this.id = id;
@@ -39,11 +46,11 @@ public class Location {
         this.name = name;
     }
 
-    public int getCacheItemNumber() {
+    public Integer getCacheItemNumber() {
         return cacheItemNumber;
     }
 
-    public void setCacheItemNumber(int cacheItemNumber) {
+    public void setCacheItemNumber(Integer cacheItemNumber) {
         this.cacheItemNumber = cacheItemNumber;
     }
 

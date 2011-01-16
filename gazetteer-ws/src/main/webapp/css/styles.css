@@ -1,0 +1,20 @@
+ul.tree {
+    list-style: none;
+}
+li.tree-leaf {
+    padding-left: 15px;
+}
+li.tree-node-collapsed, li.tree-node-expanded {
+    /* padding-left: 10px; */
+}
+tt.tree-handle {
+    width: 15px;
+    display: inline-block;
+    overflow: hidden;
+}
+.tree .tree-clickable {
+    cursor: pointer;
+}
+.tree .tree-progress {
+    cursor: progress;
+}
