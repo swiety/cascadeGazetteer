@@ -11,8 +11,8 @@ function loadedNodeLabelClicked(event) {
         return false;
     }
     $("#selectedItem").empty();
-    var handle = $(this).children("tt").text();
-    $(this).children("tt").text('+' == handle? '-' : '+');
+    $(this).parent().toggleClass('tree-node-collapsed').
+    toggleClass('tree-node-expanded');
     $(this).next("ul").toggle('slow');
     return false;
 }
@@ -22,7 +22,8 @@ function collapsedNodeLabelClicked(event) {
     $("#selectedItem").empty();
     var clickedLabel = $(this);
     //                alert('collapsedNodeLabelClicked: '+ $(this).text());
-    clickedLabel.unbind('click', collapsedNodeLabelClicked).removeClass('tree-clickable').addClass('tree-progress');
+    clickedLabel.parent().removeClass('tree-node-collapsed').addClass('tree-node-loading');
+    clickedLabel.unbind('click', collapsedNodeLabelClicked).removeClass('tree-clickable');
     var url = encodeURI(jsonURL + "cascade/" + loc.id + "/" + loc.cacheItemNumber);
     pswdebug('URL: ' + url);
     $.getJSON(url, function(data, textStatus, xhr) {
@@ -46,12 +47,14 @@ function search(address) {
     pswdebug("Searching for ["+ address + "]");
     // if previous tree build, kill it
     $("#searchResults, #selectedItem").empty();
-    $("#searchResults").text("Searching for [" + address + "], please wait.");
+    $("#searchResults").append($("<span/>", {
+        "class": "tree-node-loading"
+    }));
     var url = encodeURI(jsonURL + 'search/' + address);
     pswdebug('URL: ' + url);
     $.getJSON(url, function(data, textStatus, xhr) {
         gotSearchResult(data, textStatus, xhr);
-    });    
+    });
 }
 function gotSearchResult(data, textStatus, xhr) {
     pswdebug("gotSearchResult: text status: " + textStatus);
@@ -81,10 +84,10 @@ function cascadeInto(data, textStatus, xhr, el, loc) {
     }
     pswdebug("loaded " + data.location.length + " locations.");
     var subTree = buildTree(data.location);
-    el.children("tt").text('-');
     el.after(subTree);
     subTree.show('slow');
-    el.click(loc, loadedNodeLabelClicked).removeClass('tree-progress').addClass('tree-clickable');
+    el.parent().removeClass('tree-node-loading').addClass('tree-node-expanded');
+    el.click(loc, loadedNodeLabelClicked).addClass('tree-clickable');
 }
 function buildTree(locations) {
     // tree initially hidden, to use effect when showing to the user
@@ -108,11 +111,11 @@ function buildCollapsedCascadeLocation(loc) {
     if (!loc) {
         alert("Empty location in buildCollapsedCascadeLocation");
     }
-    var el = $("<li/>").append($("<label/>", {
+    var el = $("<li/>", {
+        "class": "tree-node-collapsed"
+    }).append($("<label/>", {
         "class": "tree-clickable"
-    }).click(loc, collapsedNodeLabelClicked).append($("<tt/>", {
-        "class": "tree-handle"
-    }).text("+")).append(loc.name));
+    }).click(loc, collapsedNodeLabelClicked).append(loc.name));
     return el;
 }
 function buildLeafLocation(loc) {
@@ -131,11 +134,11 @@ function buildLeafLocation(loc) {
 }
 
 function pswdebug(message) {
-    var dbgEl = $("#pswdebug");
-    if (!dbgEl.length) {
-        dbgEl = $("<ol/>", {
-            "id": "pswdebug"
-        }).appendTo("body");
-    }
-    dbgEl.prepend($("<li>").text(message));
+//    var dbgEl = $("#pswdebug");
+//    if (!dbgEl.length) {
+//        dbgEl = $("<ol/>", {
+//            "id": "pswdebug"
+//        }).appendTo("body");
+//    }
+//    dbgEl.prepend($("<li>").text(message));
 }

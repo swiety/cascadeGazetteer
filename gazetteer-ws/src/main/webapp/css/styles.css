@@ -2,16 +2,30 @@ ul.tree {
     list-style: none;
 }
 li.tree-leaf {
-    padding-left: 15px;
+    padding-left: 20px;
+    background-image: url("../img/file.gif");
+    background-repeat: no-repeat;
+    background-position: left top;
 }
-tt.tree-handle {
-    width: 15px;
-    display: inline-block;
-    overflow: hidden;
+li.tree-node-collapsed {
+    padding-left: 20px;
+    background-image: url("../img/folder2.gif");
+    background-repeat: no-repeat;
+    background-position: left top;
+}
+li.tree-node-expanded {
+    padding-left: 20px;
+    background-image: url("../img/folder_open2.gif");
+    background-repeat: no-repeat;
+    background-position: left top;
+}
+li.tree-node-loading, span.tree-node-loading {
+    padding-left: 20px;
+    background-image: url("../img/progress.gif");
+    background-repeat: no-repeat;
+    background-position: left top;
+    cursor: progress;
 }
 .tree .tree-clickable {
     cursor: pointer;
-}
-.tree .tree-progress {
-    cursor: progress;
 }
