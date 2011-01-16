@@ -2,27 +2,19 @@ var jsonURL = './resources/location/';
 function leafLabelClicked(event) {
     var loc = event.data;
     pswdebug("leafLabelClicked: " + $.param(loc));
-    $("#selectedItem").text("Selected location: [" + loc.name + "]"); // TODO: dump location properties
-    //                alert('leaf clicked: '+ event.target);
-    //    alert('leaf clicked: '+ $(this).text());
+    $("#selectedItem").text("Selected location: [" + loc.name + "] of id [" + loc.id + "]");
     return false;
 }
 function loadedNodeLabelClicked(event) {
     pswdebug("leafLabelClicked: " + (event.data? $.param(event.data) : 'null'));
     if (!event.data) {
-        return;
+        return false;
     }
     $("#selectedItem").empty();
-    var clickedLabel = $(this);
-    var isExpanded = $(this).hasClass('tree-node-expanded');
-    pswdebug("expanded? " + isExpanded);
-    if (expanded) {
-        clickedLabel.children("tt").text('+');
-        clickedLabel.next("ul").hide(slow);
-    } else {
-        clickedLabel.children("tt").text('-');
-        clickedLabel.next("ul").show(slow);
-    }
+    var handle = $(this).children("tt").text();
+    $(this).children("tt").text('+' == handle? '-' : '+');
+    $(this).next("ul").toggle('slow');
+    return false;
 }
 function collapsedNodeLabelClicked(event) {
     var loc = event.data;
@@ -36,6 +28,7 @@ function collapsedNodeLabelClicked(event) {
     $.getJSON(url, function(data, textStatus, xhr) {
         cascadeInto(data, textStatus, xhr, clickedLabel, loc);
     });
+    return false;
 }
 function safeSearch() {
     try {
@@ -88,6 +81,7 @@ function cascadeInto(data, textStatus, xhr, el, loc) {
     }
     pswdebug("loaded " + data.location.length + " locations.");
     var subTree = buildTree(data.location);
+    el.children("tt").text('-');
     el.after(subTree);
     subTree.show('slow');
     el.click(loc, loadedNodeLabelClicked).removeClass('tree-progress').addClass('tree-clickable');
@@ -114,21 +108,12 @@ function buildCollapsedCascadeLocation(loc) {
     if (!loc) {
         alert("Empty location in buildCollapsedCascadeLocation");
     }
-    var el = $("<li/>", {
-        "class": "tree-node-collapsed"
-    }).append($("<label/>", {
+    var el = $("<li/>").append($("<label/>", {
         "class": "tree-clickable"
     }).click(loc, collapsedNodeLabelClicked).append($("<tt/>", {
         "class": "tree-handle"
     }).text("+")).append(loc.name));
     return el;
-//                <li class="tree-node-collapsed">
-//                    <label>
-//                        <tt class="tree-handle">+</tt>
-//                        Second item
-//                    </label>
-//                </li>
-
 }
 function buildLeafLocation(loc) {
     if (!loc) {

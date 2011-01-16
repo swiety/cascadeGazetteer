@@ -4,9 +4,6 @@ ul.tree {
 li.tree-leaf {
     padding-left: 15px;
 }
-li.tree-node-collapsed, li.tree-node-expanded {
-    /* padding-left: 10px; */
-}
 tt.tree-handle {
     width: 15px;
     display: inline-block;
